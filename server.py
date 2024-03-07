@@ -4,14 +4,16 @@ from pylovepdf.tools.merge import Merge
 from pylovepdf.tools.compress import Compress
 from pylovepdf.tools.officepdf import OfficeToPdf
 import os
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/jpg-pdf', methods=['POST'])
 def jpg_a_pdf():
     try:
-        file = request.files['file']
+        file = request.files.getlist('files')[0]
         
         # se guarda el archivo en el directorio de trabajo
         file_path = os.path.join(os.getcwd(), file.filename)
@@ -22,20 +24,9 @@ def jpg_a_pdf():
         # se elimina el archivo despues de la conversion
         os.remove(file_path)
         
-#        if pdf_path:
-#            return f"PDF convertido: {pdf_path}", 200
-#        else:
-#            return "Error al convertir la imagen a PDF", 500
-#    except Exception as e:
-#        print("Error al convertir el archivo:", e)
-#        return "Error al convertir el archivo", 500
         if pdf_path:
-            # Instead of downloading the file, return it as a response
-            with open(pdf_path, 'rb') as file:
-                return jsonify({
-                    'success': True,
-                    'file': file.read().decode('latin-1')
-                }), 200
+            return send_file(pdf_path)
+        
         else:
             return jsonify({
                 'success': False,
@@ -60,24 +51,13 @@ def merge():
 
         pdf_path = merge_pdfs(files)
 
-        # se eliminan los archivos despues de la conversion
         for file in files:
             os.remove(file)
-        # se retorna el archivo unido
-#        if pdf_path:
-#            return send_file(pdf_path, as_attachment=True), 200
-#        else:
-#            return "Error al fusionar los archivos PDF", 500
-#    except Exception as e:
-#        print("Error al unir los archivos:", e)
-#        return "Error al unir los archivos", 500
+
         if pdf_path:
-                # Instead of downloading the file, return it as a response
-                with open(pdf_path, 'rb') as file:
-                    return jsonify({
-                        'success': True,
-                        'file': file.read().decode('latin-1')
-                    }), 200
+                # se elimina el archivo despues de la conversion
+                os.remove(file_path)
+                return send_file(pdf_path)
         else:
                 return jsonify({
                     'success': False,
@@ -93,32 +73,17 @@ def merge():
 @app.route('/compress', methods=['POST'])
 def compress_pdf():
     try:
-        file = request.files['file']
+        file = request.files.getlist('files')[0]
         
         # se guarda el archivo en el directorio de trabajo
         file_path = os.path.join(os.getcwd(), file.filename)
         file.save(file_path)
 
-        pdf_path = compress_pdf(file_path)
-        
-        # se elimina el archivo despues de la conversion
+        pdf_path = compress_pdf(file_path,)
         os.remove(file_path)
-        
-#        if pdf_path:
-#            return f"PDF comprimido: {pdf_path}", 200
-#        else:
-#            return "Error al comprimir el PDF", 500
-#    except Exception as e:
-#        print("Error al comprimir el archivo:", e)
-#        return "Error al comprimir el archivo", 500
 
         if pdf_path:
-            # retornar el archivo comprimido
-            with open(pdf_path, 'rb') as file:
-                return jsonify({
-                    'success': True,
-                    'file': file.read().decode('latin-1')
-                }), 200
+            return send_file(pdf_path)
         else:
             return jsonify({
                 'success': False,
@@ -136,30 +101,16 @@ def compress_pdf():
 @app.route('/word-pdf', methods=['POST'])
 def word_a_pdf():
     try:
-            file = request.files['file']
+            file = request.files.getlist('files')[0]
             # se guarda el archivo en el directorio de trabajo
             file_path = os.path.join(os.getcwd(), file.filename)
             file.save(file_path)
 
             pdf_path = convert_word_to_pdf(file_path)
-            
-            # se elimina el archivo despues de la conversion
             os.remove(file_path)
-            
-#            if pdf_path:
-#                return f"Word convertido: {pdf_path}", 200
-#            else:
-#                return "Error al convertir el word a PDF", 500
-#    except Exception as e:
-#        print("Error al convertir el archivo:", e)
-#        return "Error al convertir el archivo", 500
+
             if pdf_path:
-                # retornar el archivo convertido
-                with open(pdf_path, 'rb') as file:
-                    return jsonify({
-                        'success': True,
-                        'file': file.read().decode('latin-1')
-                    }), 200
+                return send_file(pdf_path)
             else:
                 return jsonify({
                     'success': False,
