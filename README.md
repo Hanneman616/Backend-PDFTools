@@ -15,6 +15,8 @@ Ensure you have Python installed on your system. Then, execute the following com
 pip install pylovepdf
 pip install Flask
 pip install requests
+pip install send_file 
+pip install jsonify
 ```
 
 ## Run 
