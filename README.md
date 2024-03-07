@@ -17,6 +17,8 @@ pip install Flask
 pip install requests
 pip install send_file 
 pip install jsonify
+pip install -U flask-cors
+
 ```
 
 ## Run 
