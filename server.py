@@ -51,12 +51,12 @@ def merge():
 
         pdf_path = merge_pdfs(files)
 
+
+# se elimina el archivo despues de la conversion
         for file in files:
             os.remove(file)
 
-        if pdf_path:
-                # se elimina el archivo despues de la conversion
-                os.remove(file_path)
+        if pdf_path: 
                 return send_file(pdf_path)
         else:
                 return jsonify({
