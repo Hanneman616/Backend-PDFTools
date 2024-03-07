@@ -25,10 +25,10 @@ pip install -U flask-cors
 To run the project, simply execute the following command:
 
 ```bash
-python endpoints.py
+python server.py
 ```
 
-It will run on : http://127.0.0.1:8080
+It will run on : http://127.0.0.1:4000
 
 
 
